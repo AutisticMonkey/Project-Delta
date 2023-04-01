@@ -1,0 +1,43 @@
+
+-- do whatever you want here after it teleports!
+plr = game.Players.LocalPlayer
+hum = plr.Character.HumanoidRootPart
+mouse = plr:GetMouse()
+local character = game.Players.LocalPlayer.Character
+local tween_s = game:GetService('TweenService')
+local tweeninfo = TweenInfo.new(1,Enum.EasingStyle.Linear)
+
+local lp = game.Players.LocalPlayer
+mouse.KeyDown:connect(function(key)
+if key == "m" then
+if mouse.Target then
+local CFrameEnd = CFrame.new(Vector3.new(mouse.Hit.x, mouse.Hit.y+50, mouse.Hit.z)) -- Place your coords in here
+local Time = 3 -- Time in seconds
+local tween =  game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Time), {CFrame = CFrameEnd})
+tween:Play()
+hum.Touched:Connect(function(hit)
+	if hit.ClassName == "MeshPart" or "Part" or "Terrain" then
+		print("hit sum")
+		tween:Cancel()
+		return
+	end
+end)
+tween.Completed:Wait()
+local ray = Ray.new(character.HumanoidRootPart.Position, Vector3.new(0, -1, 0)*100) -- create a ray pointing down from the character's position
+local part, position = workspace:FindPartOnRay(ray, character) -- find the first part the ray hits that is not part of the character
+if part then
+   local distance = (position - character.HumanoidRootPart.Position).Magnitude -- calculate the distance between the character and the ground
+   print("Distance to ground:", distance)
+   distance-=10
+   local newpos = Vector3.new(lp.Character.HumanoidRootPart.Position.x,lp.Character.HumanoidRootPart.Position.y - (distance), lp.Character.HumanoidRootPart.Position.z)
+   local NewCFrameEnd = CFrame.new(newpos)
+local newtween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Time), {CFrame = NewCFrameEnd})
+newtween:Play()
+newtween.Completed:Wait()
+print("teleported successfuly")
+   return
+end
+
+end
+end
+end)
